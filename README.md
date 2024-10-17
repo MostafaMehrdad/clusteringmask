@@ -20,8 +20,24 @@ python3 --version
 1. Check the `.env` file and properly set the `THRESHOLD` and `COL`:
     - set `THRESHOLD` to the proper threshold.
     - set `COL` to the number of columns in each row of the raster.
-2. Run the program with the following command, replace the file path:
+2. Create a virtual environment:
 ```powershell
-python3 main.py path/to/the/file
+python -m venv venv
 ```
-3. Result will be in the `output` folder with the same name of the input file.
+3. Set execution policy:
+```powershell
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
+4. Activate virtual environment:
+```powershell
+.\venv\Scripts\Activate.ps1
+```
+5. Install dependencies:
+```powershell
+pip install -r requirements.txt
+```
+6. Run the program with the following command, replace the file path:
+```powershell
+python main.py path/to/the/file
+```
+7. Result will be in the `output` folder with the same name of the input file.
