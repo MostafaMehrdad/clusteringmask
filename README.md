@@ -13,7 +13,7 @@ This repository contains the clustering mask python app that takes an excel expo
 
 Note: both of these are usually there, so before doing anything, first check if `python3` is already part of the powershell command. Open a Powershell instance and check if you see the version of the python installed by running the following command:
 ```powershell
-python3 --version
+python --version
 ```
 ## Usage
 
