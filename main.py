@@ -13,7 +13,7 @@ def read_file(file: str) -> pd.DataFrame:
 
 
 def index_to_tuple(index: int, column_quantity: int) -> tuple[int, int]:
-    return (int(row := index // column_quantity), int(index - row * column_quantity))
+    return (int(row := (index - 1) // column_quantity + 1), int(index - (row - 1) * column_quantity))
 
 
 def get_points(df: pd.DataFrame, column_quantity: int) -> dict[tuple[int, int], float]:
@@ -74,7 +74,7 @@ def create_cluster_df(
     clusters_dict: dict[int, list[tuple[int, int]]], column_quantity: int
 ) -> pd.DataFrame:
     index_to_cluster = {
-        z[0] * column_quantity + z[1]: x for x, y in clusters_dict.items() for z in y
+        (z[0] - 1) * column_quantity + z[1]: x for x, y in clusters_dict.items() for z in y
     }
     return pd.DataFrame.from_dict(index_to_cluster, orient="index").rename(
         columns={0: "cluster"}
