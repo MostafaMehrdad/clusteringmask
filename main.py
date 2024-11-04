@@ -4,6 +4,8 @@ from dotenv import load_dotenv  # type: ignore
 import os
 import sys
 
+sys.setrecursionlimit(10**6)
+
 def read_file(file: str) -> pd.DataFrame:
     data: pd.DataFrame = pd.read_excel(file)
     data = cast(pd.DataFrame, data[~data["id"].isna()])
@@ -35,18 +37,24 @@ def find_neighbours(index: tuple[int, int]) -> list[tuple[int, int]]:
 
 
 def get_cluster(
-    index: tuple[int, int], points: list[tuple[int, int]]
+    index: tuple[int, int], points: set[tuple[int, int]]
 ) -> list[tuple[int, int]]:
     """
     get_cluster takes one point and all the eligible points
     returns the list of all points in the cluster with the input point
     """
     cluster: list[tuple[int, int]] = [index]
-    eligible_neighbours = [x for x in find_neighbours(index) if x in points]
-    cluster.extend(eligible_neighbours)
+    stack = [x for x in find_neighbours(index) if x in points]
+    cluster.extend(stack)
+    points -= set(stack)
+    
+    while stack:
+        current_point = stack.pop()
+        eligible_neighbours = [x for x in find_neighbours(current_point) if x in points]
+        points -= set(eligible_neighbours)
+        cluster.extend(eligible_neighbours)
+        stack.extend(eligible_neighbours)
 
-    for neighbour in eligible_neighbours:
-        cluster.extend(get_cluster(neighbour, [x for x in points if x not in cluster]))
     return cluster
 
 
@@ -58,13 +66,12 @@ def find_clusters(
     result[0] = [p for p, v in points.items() if v < threshold]
 
     eligible_points = {p: v for p, v in points.items() if v >= threshold}
-    remaining_points = list(eligible_points.keys())
+    remaining_points = set(eligible_points.keys())
 
     cluster_counter = 1
     while remaining_points:
-        current_point = remaining_points[0]
+        current_point = remaining_points.pop()
         cluster_points = get_cluster(current_point, remaining_points)
-        remaining_points = [x for x in remaining_points if x not in cluster_points]
         result[cluster_counter] = cluster_points
         cluster_counter += 1
     return result
