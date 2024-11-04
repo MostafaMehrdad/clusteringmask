@@ -105,7 +105,10 @@ def main(file_name: str) -> None:
     if not os.path.isdir("output"):
         os.mkdir("output")
     result_df.rename(columns={"index": "id", "value": "av(ppm)"}, inplace=True)
-    result_df.to_excel(f"output/{file_name.split("/")[-1]}", index=False)
+    name = os.path.split(file_name)[-1]
+    target = os.path.join("output", name)
+    print("Writing into", target)
+    result_df.to_excel(target, index=False)
 
 if __name__ == "__main__":
     main(sys.argv[1])
