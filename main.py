@@ -90,8 +90,8 @@ def create_cluster_df(
 def main(file_name: str) -> None:
     load_dotenv(override=True)
     threshold = float(os.environ.get("THRESHOLD", 0))
+    print(threshold)
     col = int(os.environ.get("COL", 0))
-    print("THRESHOLD:", threshold, "\nCOL:", col)
     if not threshold or not col:
         raise ValueError("please populate .env file with proper values.")
 
@@ -106,8 +106,11 @@ def main(file_name: str) -> None:
     if not os.path.isdir("output"):
         os.mkdir("output")
     result_df.rename(columns={"index": "id", "value": "av(ppm)"}, inplace=True)
-    name = os.path.split(file_name)[-1]
-    target = os.path.join("output", name)
+    
+    base_name = os.path.splitext(os.path.split(file_name)[-1])[0]
+    name_with_suffix = f"{base_name}-BKNM.xlsx"
+    target = os.path.join("output", name_with_suffix)
+    
     print("Writing into", target)
     result_df.to_excel(target, index=False)
 
