@@ -88,9 +88,10 @@ def create_cluster_df(
     )
 
 def main(file_name: str) -> None:
-    load_dotenv()
+    load_dotenv(override=True)
     threshold = float(os.environ.get("THRESHOLD", 0))
     col = int(os.environ.get("COL", 0))
+    print("THRESHOLD:", threshold, "\nCOL:", col)
     if not threshold or not col:
         raise ValueError("please populate .env file with proper values.")
 
